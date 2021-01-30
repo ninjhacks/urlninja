@@ -11,7 +11,7 @@ import requests
 import os
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
-from concurrent.futures import ThreadPoolExecutor, wait, as_completed
+from threading import Thread
 from optparse import OptionParser
 import json
 
@@ -99,13 +99,13 @@ def cCrawlIndex():
 
 def worker(domain):
     if cCrawl:
-        commonCrawl(domain)
+        Thread(target=commonCrawl, args=(domain,)).start()
     if wBack:
-        wayBack(domain)
+        Thread(target=wayBack, args=(domain,)).start()
     if otx:
-        Otx(domain)
+        Thread(target=Otx, args=(domain,)).start()
     if vtotal:
-        vTotal(domain)
+        Thread(target=vTotal, args=(domain,)).start()
 
 def header():
     os.system('clear')
@@ -175,7 +175,7 @@ for provider in options.providers.split():
             configFile.close()
         else:
             ccIndex = configData["CommonCrawlIndex"]
-        if ccFilters != "":
+        if ccIndex != "":
             cCrawl = True
         if options.ccfilter != None:    
             for f in options.ccfilter.split():
