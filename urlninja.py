@@ -148,7 +148,7 @@ if not options.silent:
 retry_strategy = Retry(
     total=options.retry,
     status_forcelist=[429, 500, 502, 503, 504],
-    method_whitelist="GET"
+    allowed_methods="GET"
 )
 adapter = HTTPAdapter(max_retries=retry_strategy)
 req = requests.Session()
